@@ -55,20 +55,18 @@ endif()
 
 # Dependencies
 # ------------
-
 find_package(OpenSSL REQUIRED)
-find_package(unofficial-curlpp CONFIG REQUIRED)
-find_package(unofficial-inih CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(pugixml CONFIG REQUIRED)
 find_package(ZLIB REQUIRED)
 
+# List of libraries to link against
 list(APPEND MINIO_CPP_LIBS
-  unofficial::curlpp::curlpp
-  unofficial::inih::inireader
+  curlpp
   nlohmann_json::nlohmann_json
   pugixml
-  OpenSSL::SSL OpenSSL::Crypto
+  OpenSSL::SSL
+  OpenSSL::Crypto
   ZLIB::ZLIB
 )
 
