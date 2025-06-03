@@ -854,11 +854,11 @@ GetBucketVersioningResponse BaseClient::GetBucketVersioning(
 
   pugi::xpath_node text;
 
-  if (!root.node().select_node("Status")) {
+  if (root.node().select_node("Status")) {
     text = root.node().select_node("Status/text()");
     response.status = (strcmp(text.node().value(), "Enabled") == 0);
   }
-  if (!root.node().select_node("MFADelete")) {
+  if (root.node().select_node("MFADelete")) {
     text = root.node().select_node("MFADelete/text()");
     response.mfa_delete = (strcmp(text.node().value(), "Enabled") == 0);
   }
@@ -894,7 +894,7 @@ GetObjectResponse BaseClient::GetObject(GetObjectArgs args) {
   req.userdata = args.userdata;
   req.progressfunc = args.progressfunc;
   req.progress_userdata = args.progress_userdata;
-  if (args.ssec != nullptr) req.headers.AddAll(args.ssec->Headers());
+  req.headers.AddAll(args.Headers());
 
   return GetObjectResponse(Execute(req));
 }
@@ -1384,6 +1384,10 @@ PutObjectResponse BaseClient::PutObject(PutObjectApiArgs args) {
   PutObjectResponse resp;
   resp.etag = utils::Trim(response.headers.GetFront("etag"), '"');
   resp.version_id = response.headers.GetFront("x-amz-version-id");
+  resp.checksumCRC32 = response.headers.GetFront("x-amz-checksum-crc32");
+  resp.checksumCRC32C = response.headers.GetFront("x-amz-checksum-crc32c");
+  resp.checksumSHA1 = response.headers.GetFront("x-amz-checksum-sha1");
+  resp.checksumSHA256 = response.headers.GetFront("x-amz-checksum-sha256");
 
   return resp;
 }
